@@ -1,72 +1,72 @@
-# Unity 6.3 — Input Module Reference
+# Unity 6.3 — 输入模块参考
 
-**Last verified:** 2026-02-13
-**Knowledge Gap:** Unity 6 uses new Input System (legacy Input deprecated)
-
----
-
-## Overview
-
-Unity 6 input systems:
-- **Input System Package** (RECOMMENDED): Cross-platform, rebindable, modern
-- **Legacy Input Manager**: Deprecated, avoid for new projects
+**最后验证：** 2026-02-13
+**知识差距：** Unity 6 使用新 Input System（旧版 Input 已弃用）
 
 ---
 
-## Key Changes from 2022 LTS
+## 概述
 
-### Legacy Input Deprecated in Unity 6
+Unity 6 输入系统：
+- **Input System 包**（推荐）：跨平台、可重绑定、现代
+- **旧版 Input Manager**：已弃用，新项目避免使用
+
+---
+
+## 与 2022 LTS 的主要变更
+
+### Unity 6 中旧版 Input 已弃用
 
 ```csharp
-// ❌ DEPRECATED: Input class
+// ❌ 已弃用：Input 类
 if (Input.GetKeyDown(KeyCode.Space)) { }
 
-// ✅ NEW: Input System package
+// ✅ 新版：Input System 包
 using UnityEngine.InputSystem;
 if (Keyboard.current.spaceKey.wasPressedThisFrame) { }
 ```
 
-**Migration Required:** Install `com.unity.inputsystem` package.
+**需要迁移：** 安装 `com.unity.inputsystem` 包。
 
 ---
 
-## Input System Package Setup
+## Input System 包设置
 
-### Installation
+### 安装
 1. `Window > Package Manager`
-2. Search "Input System"
-3. Install package
-4. Restart Unity when prompted
+2. 搜索 "Input System"
+3. 安装包
+4. 提示时重启 Unity
 
-### Enable New Input System
-`Edit > Project Settings > Player > Active Input Handling`:
-- **Input System Package (New)** ✅ Recommended
-- **Both** (for migration period)
+### 启用新 Input System
+`Edit > Project Settings > Player > Active Input Handling`：
+- **Input System Package (New)** ✅ 推荐
+- **Both**（迁移期间）
 
 ---
 
-## Input Actions (Recommended Pattern)
+## Input Actions（推荐模式）
 
-### Create Input Actions Asset
+### 创建 Input Actions 资源
 
 1. `Assets > Create > Input Actions`
-2. Name it (e.g., "PlayerControls")
-3. Open asset, define actions:
+2. 命名（例如 "PlayerControls"）
+3. 打开资源，定义动作：
 
 ```
-Action Maps:
+Action Maps：
   Gameplay
-    Actions:
-      - Move (Value, Vector2)
-      - Jump (Button)
-      - Fire (Button)
-      - Look (Value, Vector2)
+    Actions：
+      - Move（Value，Vector2）
+      - Jump（Button）
+      - Fire（Button）
+      - Look（Value，Vector2）
 ```
 
-4. **Generate C# Class**: Check "Generate C# Class" in Inspector
-5. Click "Apply"
+4. **生成 C# 类**：在 Inspector 中勾选 "Generate C# Class"
+5. 点击 "Apply"
 
-### Use Generated Input Class
+### 使用生成的 Input 类
 
 ```csharp
 using UnityEngine;
@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour {
     void Awake() {
         controls = new PlayerControls();
 
-        // Subscribe to actions
+        // 订阅动作
         controls.Gameplay.Jump.performed += ctx => Jump();
         controls.Gameplay.Fire.performed += ctx => Fire();
     }
@@ -87,84 +87,84 @@ public class PlayerController : MonoBehaviour {
     void OnDisable() => controls.Disable();
 
     void Update() {
-        // Read continuous input
+        // 读取连续输入
         Vector2 move = controls.Gameplay.Move.ReadValue<Vector2>();
         transform.Translate(new Vector3(move.x, 0, move.y) * Time.deltaTime);
 
         Vector2 look = controls.Gameplay.Look.ReadValue<Vector2>();
-        // Apply camera rotation
+        // 应用相机旋转
     }
 
     void Jump() {
-        Debug.Log("Jump!");
+        Debug.Log("跳跃！");
     }
 
     void Fire() {
-        Debug.Log("Fire!");
+        Debug.Log("开火！");
     }
 }
 ```
 
 ---
 
-## Direct Device Access (Quick & Dirty)
+## 直接设备访问（快速但简陋）
 
-### Keyboard
+### 键盘
 
 ```csharp
 using UnityEngine.InputSystem;
 
 void Update() {
-    // Current state
+    // 当前状态
     if (Keyboard.current.spaceKey.isPressed) { }
 
-    // Just pressed this frame
+    // 本帧刚按下
     if (Keyboard.current.spaceKey.wasPressedThisFrame) { }
 
-    // Just released this frame
+    // 本帧刚释放
     if (Keyboard.current.spaceKey.wasReleasedThisFrame) { }
 }
 ```
 
-### Mouse
+### 鼠标
 
 ```csharp
 using UnityEngine.InputSystem;
 
 void Update() {
-    // Mouse position
+    // 鼠标位置
     Vector2 mousePos = Mouse.current.position.ReadValue();
 
-    // Mouse delta (movement)
+    // 鼠标增量（移动量）
     Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
-    // Mouse buttons
+    // 鼠标按钮
     if (Mouse.current.leftButton.wasPressedThisFrame) { }
     if (Mouse.current.rightButton.isPressed) { }
 
-    // Scroll wheel
+    // 滚轮
     Vector2 scroll = Mouse.current.scroll.ReadValue();
 }
 ```
 
-### Gamepad
+### 手柄
 
 ```csharp
 using UnityEngine.InputSystem;
 
 void Update() {
     Gamepad gamepad = Gamepad.current;
-    if (gamepad == null) return; // No gamepad connected
+    if (gamepad == null) return; // 未连接手柄
 
-    // Buttons
+    // 按钮
     if (gamepad.buttonSouth.wasPressedThisFrame) { } // A/Cross
     if (gamepad.buttonWest.wasPressedThisFrame) { }  // X/Square
 
-    // Sticks
+    // 摇杆
     Vector2 leftStick = gamepad.leftStick.ReadValue();
     Vector2 rightStick = gamepad.rightStick.ReadValue();
 
-    // Triggers
+    // 扳机
     float leftTrigger = gamepad.leftTrigger.ReadValue();
     float rightTrigger = gamepad.rightTrigger.ReadValue();
 
@@ -173,7 +173,7 @@ void Update() {
 }
 ```
 
-### Touch (Mobile)
+### 触摸（移动端）
 
 ```csharp
 using UnityEngine.InputSystem;
@@ -185,152 +185,152 @@ void OnEnable() {
 
 void Update() {
     foreach (var touch in UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches) {
-        Debug.Log($"Touch at {touch.screenPosition}");
+        Debug.Log($"触摸位置 {touch.screenPosition}");
     }
 }
 ```
 
 ---
 
-## Input Action Callbacks
+## Input Action 回调
 
-### Action Callbacks (Event-Driven)
+### Action 回调（事件驱动）
 
 ```csharp
-// started: Input began (e.g., trigger pressed slightly)
+// started：输入开始（例如扳机轻按）
 controls.Gameplay.Fire.started += ctx => Debug.Log("Fire started");
 
-// performed: Input action triggered (e.g., button fully pressed)
+// performed：输入动作触发（例如按钮完全按下）
 controls.Gameplay.Fire.performed += ctx => Debug.Log("Fire performed");
 
-// canceled: Input released or interrupted
+// canceled：输入释放或中断
 controls.Gameplay.Fire.canceled += ctx => Debug.Log("Fire canceled");
 ```
 
-### Context Data
+### 上下文数据
 
 ```csharp
 controls.Gameplay.Move.performed += ctx => {
     Vector2 value = ctx.ReadValue<Vector2>();
-    float duration = ctx.duration; // How long input held
-    InputControl control = ctx.control; // Which device/control triggered it
+    float duration = ctx.duration; // 按住时长
+    InputControl control = ctx.control; // 触发输入的设备/控件
 };
 ```
 
 ---
 
-## Control Schemes & Device Switching
+## 控制方案与设备切换
 
-### Define Control Schemes in Input Actions Asset
+### 在 Input Actions 资源中定义控制方案
 
 ```
-Control Schemes:
-  - Keyboard&Mouse (Keyboard, Mouse)
-  - Gamepad (Gamepad)
-  - Touch (Touchscreen)
+Control Schemes：
+  - Keyboard&Mouse（Keyboard，Mouse）
+  - Gamepad（Gamepad）
+  - Touch（Touchscreen）
 ```
 
-### Auto-Switch on Device Change
+### 设备变化时自动切换
 
 ```csharp
 controls.Gameplay.Move.performed += ctx => {
     if (ctx.control.device is Keyboard) {
-        Debug.Log("Using keyboard");
+        Debug.Log("使用键盘");
     } else if (ctx.control.device is Gamepad) {
-        Debug.Log("Using gamepad");
+        Debug.Log("使用手柄");
     }
 };
 ```
 
 ---
 
-## Rebinding (Runtime Key Mapping)
+## 重绑定（运行时按键映射）
 
-### Interactive Rebind
+### 交互式重绑定
 
 ```csharp
 using UnityEngine.InputSystem;
 
 public void RebindJumpKey() {
     var rebindOperation = controls.Gameplay.Jump.PerformInteractiveRebinding()
-        .WithControlsExcluding("Mouse") // Exclude mouse bindings
+        .WithControlsExcluding("Mouse") // 排除鼠标绑定
         .OnComplete(operation => {
-            Debug.Log("Rebind complete");
+            Debug.Log("重绑定完成");
             operation.Dispose();
         })
         .Start();
 }
 ```
 
-### Save/Load Bindings
+### 保存/加载绑定
 
 ```csharp
-// Save
+// 保存
 string rebinds = controls.SaveBindingOverridesAsJson();
 PlayerPrefs.SetString("InputBindings", rebinds);
 
-// Load
+// 加载
 string rebinds = PlayerPrefs.GetString("InputBindings");
 controls.LoadBindingOverridesFromJson(rebinds);
 ```
 
 ---
 
-## Action Types
+## Action 类型
 
-### Button (Press/Release)
-- Single press/release
-- Example: Jump, Fire
+### Button（按下/释放）
+- 单次按下/释放
+- 示例：Jump、Fire
 
-### Value (Continuous)
-- Continuous value (float, Vector2)
-- Example: Move, Look, Aim
+### Value（连续）
+- 连续值（float、Vector2）
+- 示例：Move、Look、Aim
 
-### Pass-Through (Immediate)
-- No processing, immediate value
-- Example: Mouse position
+### Pass-Through（立即）
+- 无处理，立即值
+- 示例：鼠标位置
 
 ---
 
-## Processors (Input Modifiers)
+## Processors（输入修饰器）
 
 ### Scale
 
 ```csharp
-// In Input Actions asset: Action > Properties > Processors > Add > Scale
-// Multiply input by value (e.g., invert Y-axis)
+// 在 Input Actions 资源中：Action > Properties > Processors > Add > Scale
+// 将输入乘以值（例如反转 Y 轴）
 ```
 
 ### Invert
 
 ```csharp
-// In Input Actions asset: Action > Properties > Processors > Add > Invert
-// Flip input sign
+// 在 Input Actions 资源中：Action > Properties > Processors > Add > Invert
+// 翻转输入符号
 ```
 
 ### Dead Zone
 
 ```csharp
-// In Input Actions asset: Action > Properties > Processors > Add > Stick Deadzone
-// Ignore small stick movements
+// 在 Input Actions 资源中：Action > Properties > Processors > Add > Stick Deadzone
+// 忽略小的摇杆移动
 ```
 
 ---
 
-## PlayerInput Component (Simplified Setup)
+## PlayerInput 组件（简化设置）
 
-### Automatic Input Setup
+### 自动输入设置
 
 ```csharp
-// Add Component: Player Input
-// Assign Input Actions asset
-// Behavior: Send Messages / Invoke Unity Events / Invoke C# Events
+// 添加组件：Player Input
+// 赋值 Input Actions 资源
+// Behavior：Send Messages / Invoke Unity Events / Invoke C# Events
 
-// Send Messages example:
+// Send Messages 示例：
 public class Player : MonoBehaviour {
     public void OnMove(InputValue value) {
         Vector2 move = value.Get<Vector2>();
-        // Handle movement
+        // 处理移动
     }
 
     public void OnJump(InputValue value) {
@@ -343,14 +343,14 @@ public class Player : MonoBehaviour {
 
 ---
 
-## Debugging
+## 调试
 
 ### Input Debugger
 - `Window > Analysis > Input Debugger`
-- See active devices, input values, action states
+- 查看活动设备、输入值、action 状态
 
 ---
 
-## Sources
+## 来源
 - https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/index.html
 - https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/QuickStartGuide.html

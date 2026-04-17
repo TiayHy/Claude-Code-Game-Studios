@@ -1,127 +1,127 @@
-# Unity 6.3 — Animation Module Reference
+# Unity 6.3 — 动画模块参考
 
-**Last verified:** 2026-02-13
-**Knowledge Gap:** Unity 6 animation improvements, Timeline enhancements
-
----
-
-## Overview
-
-Unity 6.3 animation systems:
-- **Animator Controller (Mecanim)**: State machine-based (RECOMMENDED)
-- **Timeline**: Cinematic sequences, cutscenes
-- **Animation Rigging**: Procedural runtime animation
-- **Legacy Animation**: Deprecated, avoid
+**最后验证：** 2026-02-13
+**知识差距：** Unity 6 动画改进、Timeline 增强
 
 ---
 
-## Key Changes from 2022 LTS
+## 概述
 
-### Animation Rigging Package (Production-Ready in Unity 6)
+Unity 6.3 动画系统：
+- **Animator Controller（Mecanim）**：基于状态机（推荐）
+- **Timeline**：电影序列、过场动画
+- **Animation Rigging**：程序运行时动画
+- **Legacy Animation**：已弃用，避免使用
+
+---
+
+## 与 2022 LTS 的主要变更
+
+### Animation Rigging 包（Unity 6 生产就绪）
 
 ```csharp
-// Install: Package Manager > Animation Rigging
-// Runtime IK, aim constraints, procedural animation
+// 安装：Package Manager > Animation Rigging
+// 运行时 IK、瞄准约束、程序动画
 ```
 
-### Timeline Improvements
-- Better performance
-- More track types
-- Improved signal system
+### Timeline 改进
+- 更好的性能
+- 更多的轨道类型
+- 改进的信号系统
 
 ---
 
-## Animator Controller (Mecanim)
+## Animator Controller（Mecanim）
 
-### Basic Setup
+### 基本设置
 
 ```csharp
-// Create: Assets > Create > Animator Controller
-// Add to GameObject: Add Component > Animator
-// Assign Controller: Animator > Controller = YourAnimatorController
+// 创建：Assets > Create > Animator Controller
+// 添加到 GameObject：Add Component > Animator
+// 赋值 Controller：Animator > Controller = YourAnimatorController
 ```
 
-### State Transitions
+### 状态过渡
 
 ```csharp
 Animator animator = GetComponent<Animator>();
 
-// ✅ Trigger transition
+// ✅ 触发过渡
 animator.SetTrigger("Jump");
 
-// ✅ Bool parameter
+// ✅ Bool 参数
 animator.SetBool("IsRunning", true);
 
-// ✅ Float parameter (blend trees)
+// ✅ Float 参数（混合树）
 animator.SetFloat("Speed", currentSpeed);
 
-// ✅ Integer parameter
+// ✅ Integer 参数
 animator.SetInteger("WeaponType", 2);
 ```
 
-### Animation Layers
-- **Base Layer**: Default animations (locomotion)
-- **Override Layers**: Replace base layer (e.g., weapon swap)
-- **Additive Layers**: Add on top of base (e.g., breathing, aim offset)
+### 动画层
+- **基础层**：默认动画（ locomotion）
+- **覆盖层**：替换基础层（例如武器切换）
+- **叠加层**：在基础层上叠加（例如呼吸、瞄准偏移）
 
 ```csharp
-// Set layer weight (0-1)
-animator.SetLayerWeight(1, 0.5f); // 50% blend
+// 设置层权重（0-1）
+animator.SetLayerWeight(1, 0.5f); // 50% 混合
 ```
 
 ---
 
-## Blend Trees
+## 混合树
 
-### 1D Blend Tree (Speed blending)
+### 1D 混合树（速度混合）
 
 ```csharp
-// Idle (Speed = 0) → Walk (Speed = 0.5) → Run (Speed = 1.0)
+// Idle（Speed = 0）→ Walk（Speed = 0.5）→ Run（Speed = 1.0）
 animator.SetFloat("Speed", moveSpeed);
 ```
 
-### 2D Blend Tree (Directional movement)
+### 2D 混合树（方向移动）
 
 ```csharp
-// X-axis: Strafe (-1 to 1)
-// Y-axis: Forward/Back (-1 to 1)
+// X 轴：横移（-1 到 1）
+// Y 轴：前进/后退（-1 到 1）
 animator.SetFloat("MoveX", input.x);
 animator.SetFloat("MoveY", input.y);
 ```
 
 ---
 
-## Animation Events
+## 动画事件
 
-### Trigger Events from Animation Clips
+### 从动画剪辑触发事件
 
 ```csharp
-// Add in Animation window: Right-click timeline > Add Animation Event
-// Must have matching method on GameObject:
+// 在 Animation 窗口中添加：右键时间轴 > Add Animation Event
+// GameObject 上必须有匹配的方法：
 
 public void OnFootstep() {
-    // Play footstep sound
+    // 播放脚步声
     AudioSource.PlayClipAtPoint(footstepClip, transform.position);
 }
 
 public void OnAttackHit() {
-    // Deal damage
+    // 造成伤害
     DealDamageInFrontOfPlayer();
 }
 ```
 
 ---
 
-## Root Motion
+## 根运动
 
-### Character Movement via Animation
+### 通过动画控制角色移动
 
 ```csharp
 Animator animator = GetComponent<Animator>();
-animator.applyRootMotion = true; // Move character based on animation
+animator.applyRootMotion = true; // 根据动画移动角色
 
 void OnAnimatorMove() {
-    // Custom root motion handling
+    // 自定义根运动处理
     transform.position += animator.deltaPosition;
     transform.rotation *= animator.deltaRotation;
 }
@@ -129,101 +129,101 @@ void OnAnimatorMove() {
 
 ---
 
-## Animation Rigging (Unity 6+)
+## Animation Rigging（Unity 6+）
 
-### IK (Inverse Kinematics)
+### IK（反向动力学）
 
 ```csharp
-// Install: Package Manager > Animation Rigging
-// Add: Rig Builder component + Rig GameObject
+// 安装：Package Manager > Animation Rigging
+// 添加：Rig Builder 组件 + Rig GameObject
 
-// Two Bone IK (Arm/Leg)
-// - Add Two Bone IK Constraint
-// - Assign Tip (hand/foot), Mid (elbow/knee), Root (shoulder/hip)
-// - Set Target (where hand/foot should reach)
+// 双骨骼 IK（手臂/腿）
+// - 添加 Two Bone IK Constraint
+// - 赋值 Tip（手/脚）、Mid（肘/膝）、Root（肩/髋）
+// - 设置 Target（手/脚应到达的位置）
 
-// Runtime control:
+// 运行时控制：
 TwoBoneIKConstraint ikConstraint = rig.GetComponentInChildren<TwoBoneIKConstraint>();
 ikConstraint.data.target = targetTransform;
-ikConstraint.weight = 1f; // 0-1 blend
+ikConstraint.weight = 1f; // 0-1 混合
 ```
 
-### Aim Constraint (Look At)
+### 瞄准约束（看向）
 
 ```csharp
-// Character looks at target
+// 角色看向目标
 MultiAimConstraint aimConstraint = rig.GetComponentInChildren<MultiAimConstraint>();
 aimConstraint.data.sourceObjects[0] = new WeightedTransform(targetTransform, 1f);
 ```
 
 ---
 
-## Timeline (Cutscenes)
+## Timeline（过场动画）
 
-### Basic Timeline Setup
+### 基本 Timeline 设置
 
 ```csharp
-// Create: Assets > Create > Timeline
-// Add to GameObject: Add Component > Playable Director
-// Assign Timeline: Playable Director > Playable = YourTimeline
+// 创建：Assets > Create > Timeline
+// 添加到 GameObject：Add Component > Playable Director
+// 赋值 Timeline：Playable Director > Playable = YourTimeline
 
-// Play from script:
+// 从脚本播放：
 PlayableDirector director = GetComponent<PlayableDirector>();
 director.Play();
 ```
 
-### Timeline Tracks
-- **Activation Track**: Enable/disable GameObjects
-- **Animation Track**: Play animations on Animator
-- **Audio Track**: Synchronized audio playback
-- **Cinemachine Track**: Camera movement
-- **Signal Track**: Trigger events at specific times
+### Timeline 轨道
+- **Activation Track**：启用/禁用 GameObject
+- **Animation Track**：在 Animator 上播放动画
+- **Audio Track**：同步音频播放
+- **Cinemachine Track**：相机移动
+- **Signal Track**：在特定时间触发事件
 
-### Signal System (Events)
+### 信号系统（事件）
 
 ```csharp
-// Create Signal Asset: Assets > Create > Signals > Signal
-// Add Signal Emitter to Timeline track
-// Add Signal Receiver component to GameObject
+// 创建信号资产：Assets > Create > Signals > Signal
+// 添加 Signal Emitter 到 Timeline 轨道
+// 添加 Signal Receiver 组件到 GameObject
 
 public class CutsceneEvents : MonoBehaviour {
     public void OnDialogueStart() {
-        // Triggered by signal
+        // 被信号触发
     }
 }
 ```
 
 ---
 
-## Animation Playback Control
+## 动画播放控制
 
-### Play Animation Directly (No State Machine)
+### 直接播放动画（无状态机）
 
 ```csharp
-// ✅ CrossFade (smooth transition)
-animator.CrossFade("Attack", 0.2f); // 0.2s transition
+// ✅ CrossFade（平滑过渡）
+animator.CrossFade("Attack", 0.2f); // 0.2s 过渡
 
-// ✅ Play (instant)
+// ✅ Play（立即）
 animator.Play("Idle");
 
-// ❌ Avoid: Legacy Animation component
-Animation anim = GetComponent<Animation>(); // DEPRECATED
+// ❌ 避免：旧版 Animation 组件
+Animation anim = GetComponent<Animation>(); // 已弃用
 ```
 
 ---
 
-## Animation Curves
+## 动画曲线
 
-### Custom Property Animation
+### 自定义属性动画
 
 ```csharp
-// In Animation window: Add Property > Custom Component > Your Script > Your Float
+// 在 Animation 窗口中：Add Property > Custom Component > Your Script > Your Float
 
 public class WeaponTrail : MonoBehaviour {
-    public float trailIntensity; // Animated by clip
+    public float trailIntensity; // 由动画控制
 
     void Update() {
-        // Intensity controlled by animation curve
+        // 强度由动画曲线控制
         trailRenderer.startWidth = trailIntensity;
     }
 }
@@ -231,38 +231,38 @@ public class WeaponTrail : MonoBehaviour {
 
 ---
 
-## Performance Optimization
+## 性能优化
 
-### Culling
-- `Animator > Culling Mode`:
-  - **Always Animate**: Always update (expensive)
-  - **Cull Update Transforms**: Stop updating bones when off-screen (RECOMMENDED)
-  - **Cull Completely**: Stop all animation when off-screen
+### 剔除
+- `Animator > Culling Mode`：
+  - **Always Animate**：始终更新（昂贵）
+  - **Cull Update Transforms**：屏幕外时停止更新骨骼（推荐）
+  - **Cull Completely**：屏幕外时停止所有动画
 
-### LOD (Level of Detail)
-- Simpler animations for distant characters
-- Reduce skeleton bone count for LOD meshes
+### LOD（细节层次）
+- 为远处角色使用更简单的动画
+- 为 LOD 网格减少骨骼数量
 
 ---
 
-## Common Patterns
+## 常见模式
 
-### Check if Animation Finished
+### 检查动画是否结束
 
 ```csharp
 AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 if (stateInfo.IsName("Attack") && stateInfo.normalizedTime >= 1.0f) {
-    // Attack animation finished
+    // 攻击动画结束
 }
 ```
 
-### Override Animation Speed
+### 覆盖动画速度
 
 ```csharp
-animator.speed = 1.5f; // 150% speed
+animator.speed = 1.5f; // 150% 速度
 ```
 
-### Get Current Animation Name
+### 获取当前动画名称
 
 ```csharp
 AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
@@ -271,19 +271,19 @@ string currentClip = clipInfo[0].clip.name;
 
 ---
 
-## Debugging
+## 调试
 
-### Animator Window
+### Animator 窗口
 - `Window > Animation > Animator`
-- Visualize state machine, see active state
+- 可视化状态机，查看活动状态
 
-### Animation Window
+### Animation 窗口
 - `Window > Animation > Animation`
-- Edit animation clips, add events
+- 编辑动画剪辑，添加事件
 
 ---
 
-## Sources
+## 来源
 - https://docs.unity3d.com/6000.0/Documentation/Manual/AnimationOverview.html
 - https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.3/manual/index.html
 - https://docs.unity3d.com/Packages/com.unity.timeline@1.8/manual/index.html
