@@ -104,12 +104,12 @@ design-system、story lifecycle、UX pipeline 和 brownfield onboarding。
 **复杂度：** 中高
 
 **场景：**
-开发者设计 HUD 和物品栏界面。`/ux-design` 读取玩家旅程和 GDD，将决策锚定在玩家情绪状态上。`/ux-review` 捕获了一个阻塞性可访问性问题（拖放没有键盘替代方案）和一个建议性的色盲问题。修复后，`/team-ui` 接受交接。
+开发者设计 HUD 和物品栏界面。`/ux-design` 读取玩家旅程和 GDD，将决策锚定在玩家情绪状态上。`/ux-review` 捕获了一个阻塞性无障碍性问题（拖放没有键盘替代方案）和一个建议性的色盲问题。修复后，`/team-ui` 接受交接。
 
 **关键时刻：**
 - HUD 哲学选择（diegetic vs. persistent vs. tactical）锚定于生存类游戏的行业惯例
 - `/ux-review` 区分 BLOCKING（停止交接）和 ADVISORY（可在视觉轮次中修复）
-- 可访问性问题在实现前捕获，而非 QA 期间
+- 无障碍性问题在实现前捕获，而非 QA 期间
 - 键盘替代方案在一轮中添加；审查重新运行并通过
 - `/team-ui` 在开始视觉设计前检查是否存在通过的 `/ux-review`
 
@@ -117,7 +117,7 @@ design-system、story lifecycle、UX pipeline 和 brownfield onboarding。
 - `/ux-design` 如何利用玩家旅程上下文来锚定 UI 决策
 - `/ux-review` 实际检查什么（不仅仅是"规范存在吗？"）
 - HUD 文档（`design/ux/hud.md`）与每个屏幕规范的区别
-- 可访问性问题在设计阶段 vs. 实现阶段如何处理
+- 无障碍性问题在设计阶段 vs. 实现阶段如何处理
 
 ---
 
