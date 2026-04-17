@@ -1,100 +1,100 @@
-# Unreal Engine 5.7 — Deprecated APIs
+# Unreal Engine 5.7 — 已废弃的 API
 
-**Last verified:** 2026-02-13
+**最后验证日期：** 2026-02-13
 
-Quick lookup table for deprecated APIs and their replacements.
-Format: **Don't use X** → **Use Y instead**
+已废弃 API 及替代方案速查表。
+格式：**不要使用 X** → **改用 Y**
 
 ---
 
-## Input
+## 输入
 
-| Deprecated | Replacement | Notes |
+| 已废弃 | 替代方案 | 说明 |
 |------------|-------------|-------|
-| `InputComponent->BindAction()` | Enhanced Input `BindAction()` | New input system |
-| `InputComponent->BindAxis()` | Enhanced Input `BindAxis()` | New input system |
-| `PlayerController->GetInputAxisValue()` | Enhanced Input Action Values | New input system |
+| `InputComponent->BindAction()` | Enhanced Input `BindAction()` | 新输入系统 |
+| `InputComponent->BindAxis()` | Enhanced Input `BindAxis()` | 新输入系统 |
+| `PlayerController->GetInputAxisValue()` | Enhanced Input Action Values | 新输入系统 |
 
-**Migration:** Install Enhanced Input plugin, create Input Actions and Input Mapping Contexts.
+**迁移方式：** 安装 Enhanced Input 插件，创建 Input Actions 和 Input Mapping Contexts。
 
 ---
 
-## Rendering
+## 渲染
 
-| Deprecated | Replacement | Notes |
+| 已废弃 | 替代方案 | 说明 |
 |------------|-------------|-------|
-| Legacy material nodes | Substrate material nodes | Substrate is production-ready in 5.7 |
-| Forward shading (default) | Deferred + Lumen | Lumen is default in UE5 |
-| Old lighting workflow | Lumen Global Illumination | Real-time GI |
+| Legacy material nodes | Substrate material nodes | Substrate 在 5.7 正式生产可用 |
+| Forward shading（默认） | Deferred + Lumen | Lumen 在 UE5 中为默认 |
+| Old lighting workflow | Lumen Global Illumination | 实时 GI |
 
 ---
 
-## World Building
+## 世界构建
 
-| Deprecated | Replacement | Notes |
+| 已废弃 | 替代方案 | 说明 |
 |------------|-------------|-------|
-| UE4 World Composition | World Partition (UE5) | Streaming large worlds |
-| Level Streaming Volumes | World Partition Data Layers | Better level streaming |
+| UE4 World Composition | World Partition（UE5） | 大世界流送 |
+| Level Streaming Volumes | World Partition Data Layers | 更好的关卡流送 |
 
 ---
 
-## Animation
+## 动画
 
-| Deprecated | Replacement | Notes |
+| 已废弃 | 替代方案 | 说明 |
 |------------|-------------|-------|
-| Old animation retargeting | IK Rig + IK Retargeter | UE5 retargeting system |
-| Legacy control rig | Control Rig 2.0 | Production-ready rigging |
+| Old animation retargeting | IK Rig + IK Retargeter | UE5 重定向系统 |
+| Legacy control rig | Control Rig 2.0 | 生产级绑骨工具 |
 
 ---
 
-## Gameplay
+## 游戏机制
 
-| Deprecated | Replacement | Notes |
+| 已废弃 | 替代方案 | 说明 |
 |------------|-------------|-------|
-| `UGameplayStatics::LoadStreamLevel()` | World Partition streaming | Use Data Layers |
-| Hardcoded input bindings | Enhanced Input system | Rebindable, modular input |
+| `UGameplayStatics::LoadStreamLevel()` | World Partition streaming | 使用 Data Layers |
+| Hardcoded input bindings | Enhanced Input system | 可重绑定，模块化输入 |
 
 ---
 
-## Niagara (VFX)
+## Niagara（VFX）
 
-| Deprecated | Replacement | Notes |
+| 已废弃 | 替代方案 | 说明 |
 |------------|-------------|-------|
-| Cascade particle system | Niagara | Cascade is fully deprecated |
+| Cascade particle system | Niagara | Cascade 已完全废弃 |
 
 ---
 
-## Audio
+## 音频
 
-| Deprecated | Replacement | Notes |
+| 已废弃 | 替代方案 | 说明 |
 |------------|-------------|-------|
-| Old audio mixer | MetaSounds | Procedural audio system |
-| Sound Cue (for complex logic) | MetaSounds | More powerful, node-based |
+| Old audio mixer | MetaSounds | 程序化音频系统 |
+| Sound Cue（复杂逻辑） | MetaSounds | 更强大，基于节点 |
 
 ---
 
-## Networking
+## 网络
 
-| Deprecated | Replacement | Notes |
+| 已废弃 | 替代方案 | 说明 |
 |------------|-------------|-------|
-| `DOREPLIFETIME()` (basic) | `DOREPLIFETIME_CONDITION()` | Conditional replication for optimization |
+| `DOREPLIFETIME()`（基本） | `DOREPLIFETIME_CONDITION()` | 条件复制以优化性能 |
 
 ---
 
-## C++ Scripting
+## C++ 脚本
 
-| Deprecated | Replacement | Notes |
+| 已废弃 | 替代方案 | 说明 |
 |------------|-------------|-------|
-| `TSharedPtr<T>` for UObjects | `TObjectPtr<T>` | UE5 type-safe pointers |
-| Manual RTTI checks | `Cast<T>()` / `IsA<T>()` | Type-safe casting |
+| `TSharedPtr<T>` 用于 UObjects | `TObjectPtr<T>` | UE5 类型安全指针 |
+| Manual RTTI checks | `Cast<T>()` / `IsA<T>()` | 类型安全转换 |
 
 ---
 
-## Quick Migration Patterns
+## 快速迁移模式
 
-### Input Example
+### 输入示例
 ```cpp
-// ❌ Deprecated
+// ❌ 已废弃
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 }
@@ -110,9 +110,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 }
 ```
 
-### Material Example
+### 材质示例
 ```cpp
-// ❌ Deprecated: Legacy material
+// ❌ 已废弃：传统材质
 // Use standard material graph (still works but not recommended)
 
 // ✅ Substrate Material
@@ -120,9 +120,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 // Use Substrate nodes in material editor
 ```
 
-### World Partition Example
+### World Partition 示例
 ```cpp
-// ❌ Deprecated: Level streaming volumes
+// ❌ 已废弃：关卡流送体积
 // Load/unload levels manually
 
 // ✅ World Partition
@@ -130,18 +130,18 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 // Use Data Layers for streaming
 ```
 
-### Particle System Example
+### 粒子系统示例
 ```cpp
-// ❌ Deprecated: Cascade
+// ❌ 已废弃：Cascade
 UParticleSystemComponent* PSC = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particles"));
 
 // ✅ Niagara
 UNiagaraComponent* NiagaraComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
 ```
 
-### Audio Example
+### 音频示例
 ```cpp
-// ❌ Deprecated: Sound Cue for complex logic
+// ❌ 已废弃：Sound Cue 用于复杂逻辑
 // Use Sound Cue editor nodes
 
 // ✅ MetaSounds
@@ -150,21 +150,21 @@ UNiagaraComponent* NiagaraComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT(
 
 ---
 
-## Summary: UE 5.7 Tech Stack
+## 总结：UE 5.7 技术栈
 
-| Feature | Use This (2026) | Avoid This (Legacy) |
+| 功能 | 推荐方案（2026） | 避免使用（传统） |
 |---------|------------------|----------------------|
-| **Input** | Enhanced Input | Legacy Input Bindings |
-| **Materials** | Substrate | Legacy Material System |
-| **Lighting** | Lumen + Megalights | Lightmaps + Limited Lights |
-| **Particles** | Niagara | Cascade |
-| **Audio** | MetaSounds | Sound Cue (for logic) |
-| **World Streaming** | World Partition | World Composition |
-| **Animation Retarget** | IK Rig + Retargeter | Old Retargeting |
-| **Geometry** | Nanite (high-poly) | Standard Static Mesh LODs |
+| **输入** | Enhanced Input | Legacy Input Bindings |
+| **材质** | Substrate | Legacy Material System |
+| **光照** | Lumen + Megalights | Lightmaps + Limited Lights |
+| **粒子** | Niagara | Cascade |
+| **音频** | MetaSounds | Sound Cue（逻辑部分） |
+| **世界流送** | World Partition | World Composition |
+| **动画重定向** | IK Rig + Retargeter | Old Retargeting |
+| **几何体** | Nanite（高精度） | Standard Static Mesh LODs |
 
 ---
 
-**Sources:**
+**参考来源：**
 - https://docs.unrealengine.com/5.7/en-US/deprecated-and-removed-features/
 - https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-7-release-notes
