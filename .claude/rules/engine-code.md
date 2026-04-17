@@ -3,35 +3,12 @@ paths:
   - "src/core/**"
 ---
 
-# Engine Code Rules
+# 引擎代码规则
 
-- ZERO allocations in hot paths (update loops, rendering, physics) — pre-allocate, pool, reuse
-- All engine APIs must be thread-safe OR explicitly documented as single-thread-only
-- Profile before AND after every optimization — document the measured numbers
-- Engine code must NEVER depend on gameplay code (strict dependency direction: engine <- gameplay)
-- Every public API must have usage examples in its doc comment
-- Changes to public interfaces require a deprecation period and migration guide
-- Use RAII / deterministic cleanup for all resources
-- All engine systems must support graceful degradation
-- Before writing engine API code, consult `docs/engine-reference/` for the current engine version and verify APIs against the reference docs
-
-## Examples
-
-**Correct** (zero-alloc hot path):
-
-```gdscript
-# Pre-allocated array reused each frame
-var _nearby_cache: Array[Node3D] = []
-
-func _physics_process(delta: float) -> void:
-    _nearby_cache.clear()  # Reuse, don't reallocate
-    _spatial_grid.query_radius(position, radius, _nearby_cache)
-```
-
-**Incorrect** (allocating in hot path):
-
-```gdscript
-func _physics_process(delta: float) -> void:
-    var nearby: Array[Node3D] = []  # VIOLATION: allocates every frame
-    nearby = get_tree().get_nodes_in_group("enemies")  # VIOLATION: tree query every frame
-```
+- 热路径中禁止任何堆内存分配（GC 会导致卡顿）
+- 所有多线程代码必须明确标注线程安全性
+- 公共 API 必须保持向后兼容——版本间不得破坏性变更
+- 引擎内部实现不得暴露给游戏代码
+- 使用 Pimpl 惯用法减少编译依赖
+- 所有资源加载必须支持异步操作
+- 内存分配必须通过自定义分配器，支持追踪和调试

@@ -3,40 +3,12 @@ paths:
   - "tests/**"
 ---
 
-# Test Standards
+# 测试标准
 
-- Test naming: `test_[system]_[scenario]_[expected_result]` pattern
-- Every test must have a clear arrange/act/assert structure
-- Unit tests must not depend on external state (filesystem, network, database)
-- Integration tests must clean up after themselves
-- Performance tests must specify acceptable thresholds and fail if exceeded
-- Test data must be defined in the test or in dedicated fixtures, never shared mutable state
-- Mock external dependencies — tests should be fast and deterministic
-- Every bug fix must have a regression test that would have caught the original bug
-
-## Examples
-
-**Correct** (proper naming + Arrange/Act/Assert):
-
-```gdscript
-func test_health_system_take_damage_reduces_health() -> void:
-    # Arrange
-    var health := HealthComponent.new()
-    health.max_health = 100
-    health.current_health = 100
-
-    # Act
-    health.take_damage(25)
-
-    # Assert
-    assert_eq(health.current_health, 75)
-```
-
-**Incorrect**:
-
-```gdscript
-func test1() -> void:  # VIOLATION: no descriptive name
-    var h := HealthComponent.new()
-    h.take_damage(25)  # VIOLATION: no arrange step, no clear assert
-    assert_true(h.current_health < 100)  # VIOLATION: imprecise assertion
-```
+- 测试命名必须描述测试内容和预期结果（如 `should_return_damage_when_attacking_enemy_with_100_hp`）
+- 每个游戏性功能必须有对应的测试覆盖
+- Fixtures 必须复用——同一个 fixture 用于多个测试文件
+- 性能测试必须设定明确的上限阈值
+- 集成测试必须清理自己的测试数据，不污染其他测试
+- 所有测试必须能在 CI 中自动运行
+- 测试失败必须提供明确的错误信息和重现场景

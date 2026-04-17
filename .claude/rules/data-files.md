@@ -1,46 +1,14 @@
 ---
 paths:
-  - "assets/data/**"
+  - "assets/**"
 ---
 
-# Data File Rules
+# 数据文件规则
 
-- All JSON files must be valid JSON — broken JSON blocks the entire build pipeline
-- File naming: lowercase with underscores only, following `[system]_[name].json` pattern
-- Every data file must have a documented schema (either JSON Schema or documented in the corresponding design doc)
-- Numeric values must include comments or companion docs explaining what the numbers mean
-- Use consistent key naming: camelCase for keys within JSON files
-- No orphaned data entries — every entry must be referenced by code or another data file
-- Version data files when making breaking schema changes
-- Include sensible defaults for all optional fields
-
-## Examples
-
-**Correct** naming and structure (`combat_enemies.json`):
-
-```json
-{
-  "goblin": {
-    "baseHealth": 50,
-    "baseDamage": 8,
-    "moveSpeed": 3.5,
-    "lootTable": "loot_goblin_common"
-  },
-  "goblin_chief": {
-    "baseHealth": 150,
-    "baseDamage": 20,
-    "moveSpeed": 2.8,
-    "lootTable": "loot_goblin_rare"
-  }
-}
-```
-
-**Incorrect** (`EnemyData.json`):
-
-```json
-{
-  "Goblin": { "hp": 50 }
-}
-```
-
-Violations: uppercase filename, uppercase key, no `[system]_[name]` pattern, missing required fields.
+- 所有数据文件必须使用 JSON Schema 验证
+- 数值字段必须标注单位（米、秒、百分比等）
+- 枚举类字段必须列出所有可选值
+- 支持数据版本控制，允许降级加载旧版本
+- 关键数据变更必须通过迁移脚本，而非手动编辑
+- 数据文件必须有对应的文档说明每个字段的含义
+- 禁止数据文件中包含逻辑代码——纯数据，不允许函数或脚本

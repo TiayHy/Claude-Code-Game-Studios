@@ -1,357 +1,356 @@
-# Collaborative Session Examples
+# 协作式会话示例
 
-This directory contains realistic, end-to-end session transcripts showing how the Game Studio Agent Architecture works in practice. Each example demonstrates the **collaborative workflow** where agents ask questions, present options, and wait for user approval rather than autonomously generating content.
-
----
-
-## Visual Reference
-
-**New to the system? Start here:**
-[Skill Flow Diagrams](skill-flow-diagrams.md) — visual maps of all 7 phases and how skills chain together.
+本目录包含真实的、端到端的会话记录，展示游戏工作室智能体架构在实践中如何运作。每个示例都展示了**协作式工作流程**：智能体提出问题、展示选项、等待用户批准，而不是自主生成内容。
 
 ---
 
-## 📚 **Available Examples**
+## 视觉参考
 
-### CORE WORKFLOW
-
-### [Skill Flow Diagrams](skill-flow-diagrams.md)
-**Type:** Visual Reference
-**Complexity:** All levels
-
-Full pipeline overview (zero to ship), plus detailed chain diagrams for:
-design-system, story lifecycle, UX pipeline, and brownfield onboarding.
-**Start here if you want to understand how the pieces fit together.**
+**新手上路？从这里开始：**
+[技能流程图](skill-flow-diagrams.md) — 全部7个阶段的可视化地图以及技能如何串联。
 
 ---
 
-### [Session: Authoring a GDD with /design-system](session-design-system-skill.md)
-**Type:** Design (skill-driven)
-**Skill:** `/design-system`
-**Duration:** ~60 minutes (14 turns)
-**Complexity:** Medium
+## 📚 **可用示例**
 
-**Scenario:**
-Dev runs `/design-system movement` after `/map-systems` produced the systems index. The skill loads context from the game concept and dependency GDDs, runs a technical feasibility pre-check, then guides through all 8 GDD sections one at a time — drafting, approving, and writing each section to disk before moving to the next.
+### 核心工作流
 
-**Key Moments:**
-- Technical feasibility pre-check flags Jolt physics default change (Godot 4.6)
-- Incremental writing: each section on disk immediately after approval
-- Session crash during section 5 → agent resumes from first empty section
-- Dependency signals (stamina, inventory) surfaced during the Dependencies section
-- Ends with explicit handoff: "run `/design-review` before the next system"
+### [技能流程图](skill-flow-diagrams.md)
+**类型：** 视觉参考
+**复杂度：** 所有级别
 
-**Learn:**
-- How `/design-system` is different from asking an agent to "write a GDD"
-- How the section-by-section cycle prevents 30k-token context bloat
-- How incremental file writing survives session crashes
-- How the skill surfaces downstream dependency contracts
+完整流程概览（从零到发布），以及以下内容的详细串联图：
+design-system、story lifecycle、UX pipeline 和 brownfield onboarding。
+**如果想理解各部分如何配合，请从这里开始。**
 
 ---
 
-### [Session: Full Story Lifecycle](session-story-lifecycle.md)
-**Type:** Full Workflow
-**Skills:** `/story-readiness` → implementation → `/story-done`
-**Duration:** ~50 minutes (13 turns)
-**Complexity:** Medium
+### [会话：使用 /design-system 创作 GDD](session-design-system-skill.md)
+**类型：** 设计（技能驱动）
+**技能：** `/design-system`
+**时长：** 约60分钟（14轮）
+**复杂度：** 中等
 
-**Scenario:**
-Dev picks up a story from the sprint backlog. `/story-readiness` catches a roll-direction ambiguity before any code is written. After implementation, `/story-done` verifies 9 acceptance criteria, identifies 2 deferred criteria (inventory not integrated yet), and closes the story with notes.
+**场景：**
+开发者运行 `/design-system movement`，前提是 `/map-systems` 已生成系统索引。该技能从游戏概念和依赖 GDD 中加载上下文，运行技术可行性预检，然后逐一引导完成全部8个 GDD 章节——在进入下一章节前，每个章节都经过起草、批准并写入磁盘。
 
-**Key Moments:**
-- `/story-readiness` catches spec ambiguity in Turn 2 — resolved before implementation starts
-- ADR status check: story would be BLOCKED if ADR was still Proposed
-- Manifest version check: confirms story's guidance hasn't drifted from current architecture
-- Deferred criteria tracked (not lost) when integration not yet possible
-- `sprint-status.yaml` updated at story close, next ready story surfaced automatically
+**关键时刻：**
+- 技术可行性预检标记了 Jolt physics 默认值变更（Godot 4.6）
+- 增量写入：每个章节批准后立即写入磁盘
+- 会话在第5章节时崩溃 → 智能体从第一个空章节恢复
+- 依赖信号（体力、物品栏）在依赖章节中被提出
+- 以明确的交接结束："下次系统前先运行 `/design-review`"
 
-**Learn:**
-- Why `/story-readiness` prevents late-implementation ambiguity
-- How deferred criteria work (COMPLETE WITH NOTES vs. BLOCKED)
-- How TR-ID references prevent false deviation flags
-- The full loop from backlog → implemented → closed
-
----
-
-### [Session: Gate Check and Phase Transition](session-gate-check-phase-transition.md)
-**Type:** Phase Gate
-**Skill:** `/gate-check`
-**Duration:** ~20 minutes (7 turns)
-**Complexity:** Low
-
-**Scenario:**
-Dev completes the Systems Design phase and runs `/gate-check` to advance. The gate finds all 6 MVP GDDs complete, cross-review passed with one low-severity concern. Gate passes, `stage.txt` updated, and the agent provides a specific ordered checklist for Technical Setup.
-
-**Key Moments:**
-- Gate validates artifact presence AND internal completeness (8 sections per GDD)
-- CONCERNS ≠ FAIL: low-severity cross-review note passes the gate
-- stage.txt update changes what `/help`, `/sprint-status`, and all skills see going forward
-- Agent surfaces the cross-review concern as a concrete ADR to write next
-- Next phase checklist is specific and ordered, not generic
-
-**Learn:**
-- What a gate check actually validates (not just "do files exist?")
-- How PASS/CONCERNS/FAIL verdicts work
-- Why stage.txt is the authority for phase tracking
-- What changes after a phase transition
+**学习要点：**
+- `/design-system` 与让智能体"写一个 GDD"有何不同
+- 逐章节循环如何避免30k token 的上下文膨胀
+- 增量文件写入如何在会话崩溃时存活
+- 技能如何暴露下游依赖契约
 
 ---
 
-### [Session: UX Pipeline — /ux-design → /ux-review → /team-ui](session-ux-pipeline.md)
-**Type:** UX Design Pipeline
-**Skills:** `/ux-design`, `/ux-review`, `/team-ui`
-**Duration:** ~90 minutes (16 turns)
-**Complexity:** Medium-High
+### [会话：完整故事生命周期](session-story-lifecycle.md)
+**类型：** 完整工作流
+**技能：** `/story-readiness` → 实现 → `/story-done`
+**时长：** 约50分钟（13轮）
+**复杂度：** 中等
 
-**Scenario:**
-Dev designs the HUD and inventory screen. `/ux-design` reads the player journey and GDDs to ground decisions in player emotional state. `/ux-review` catches a blocking accessibility gap (no keyboard alternative to drag-drop) and an advisory colorblind issue. After fixes, `/team-ui` accepts the handoff.
+**场景：**
+开发者从冲刺待办中挑选一个故事。`/story-readiness` 在任何代码编写前捕获了 roll-direction 歧义。实现完成后，`/story-done` 验证了9个验收标准，识别出2个延后标准（物品栏尚未集成），并附笔记关闭故事。
 
-**Key Moments:**
-- HUD philosophy choice (diegetic vs. persistent vs. tactical) grounded in survival genre conventions
-- `/ux-review` distinguishes BLOCKING (stops handoff) vs. ADVISORY (can fix in visual pass)
-- Accessibility caught before implementation, not during QA
-- Keyboard alternative added in one turn; review re-runs and passes
-- `/team-ui` checks for a passing `/ux-review` before starting visual design
+**关键时刻：**
+- `/story-readiness` 在第2轮捕获了规范中的歧义——在实现开始前解决
+- ADR 状态检查：如果 ADR 仍为 Proposed，故事将被 BLOCKED
+- Manifest 版本检查：确认故事的指导与当前架构没有漂移
+- 延后标准被追踪（而非丢失）——当集成尚不可行时
+- 故事关闭时更新 `sprint-status.yaml`，下一个就绪故事自动浮现
 
-**Learn:**
-- How `/ux-design` uses player journey context to ground UI decisions
-- What `/ux-review` actually checks (not just "does a spec exist?")
-- The difference between HUD doc (`design/ux/hud.md`) and per-screen specs
-- How accessibility issues are handled at design time vs. implementation time
-
----
-
-### [Session: Brownfield Onboarding with /adopt](session-adopt-brownfield.md)
-**Type:** Brownfield Adoption
-**Skill:** `/adopt`
-**Duration:** ~30 minutes (8 turns)
-**Complexity:** Low-Medium
-
-**Scenario:**
-Dev has 3 months of existing code and rough design notes but nothing in the right format. `/adopt` audits format compliance (not just file existence), classifies 4 gaps by severity, builds an ordered 7-step migration plan, and immediately fixes the BLOCKING gap (missing systems index) by inferring it from the codebase.
-
-**Key Moments:**
-- FORMAT audit distinguishes "file exists" from "file has required internal structure"
-- BLOCKING gap identified: missing systems index prevents 4+ skills from running
-- Migration plan is ordered: blocking gaps first, then high, then medium
-- Systems index bootstrapped from code structure — brownfield code contains the answer
-- Retrofit mode vs. new authoring: `/design-system retrofit` fills gaps without overwriting
-
-**Learn:**
-- The difference between `/adopt` and `/project-stage-detect`
-- How format compliance is checked (section detection, not just file presence)
-- How brownfield projects can onboard without losing existing work
-- When to use retrofit mode vs. full authoring
+**学习要点：**
+- 为何 `/story-readiness` 能防止后期实现歧义
+- 延后标准如何工作（COMPLETE WITH NOTES vs. BLOCKED）
+- TR-ID 引用如何防止误报偏差
+- 从待办 → 已实现 → 已关闭的完整循环
 
 ---
 
-### FOUNDATIONAL EXAMPLES
+### [会话：关卡检查与阶段转换](session-gate-check-phase-transition.md)
+**类型：** 阶段关卡
+**技能：** `/gate-check`
+**时长：** 约20分钟（7轮）
+**复杂度：** 低
 
-### [Session: Designing the Crafting System](session-design-crafting-system.md)
-**Type:** Design
-**Agent:** game-designer
-**Duration:** ~45 minutes (12 turns)
-**Complexity:** Medium
+**场景：**
+开发者完成系统设计阶段，运行 `/gate-check` 以推进。关卡发现全部6个 MVP GDD 完成，交叉评审通过但有一个低严重级别问题。关卡通过，`stage.txt` 更新，智能体提供技术设置的具体有序清单。
 
-**Scenario:**
-Solo dev needs to design a crafting system that serves Pillar 2 ("Emergent Discovery Through Experimentation"). The agent guides them through question/answer, presents 3 design options with game theory analysis, incorporates user modifications, and iteratively drafts the GDD with approval at each step.
+**关键时刻：**
+- 关卡验证制品存在性和内部完整性（每个 GDD 8个章节）
+- CONCERNS ≠ FAIL：低严重级别的交叉评审备注通过关卡
+- stage.txt 更新改变 `/help`、`/sprint-status` 和所有技能后续看到的内容
+- 智能体将交叉评审问题作为具体 ADR 呈现给下一个
+- 下一阶段清单具体且有序，而非泛泛而谈
 
-**Key Collaborative Moments:**
-- Agent asks 5 clarifying questions upfront
-- Presents 3 distinct options with pros/cons + MDA alignment
-- User modifies recommended option, agent incorporates immediately
-- Edge case flagged proactively ("what if non-recipe combo?")
-- Each GDD section shown for approval before moving to next
-- Explicit "May I write to [file]?" before creating file
-
-**Learn:**
-- How design agents ask about goals, constraints, references
-- How to present options using game design theory (MDA, SDT, Bartle)
-- How to iterate on drafts section-by-section
-- When to delegate to specialists (systems-designer, economy-designer)
+**学习要点：**
+- 关卡检查实际验证什么（不仅仅是"文件存在吗？"）
+- PASS/CONCERNS/FAIL 裁定如何运作
+- 为何 stage.txt 是阶段追踪的权威来源
+- 阶段转换后会发生什么变化
 
 ---
 
-### [Session: Implementing Combat Damage Calculation](session-implement-combat-damage.md)
-**Type:** Implementation
-**Agent:** gameplay-programmer
-**Duration:** ~30 minutes (10 turns)
-**Complexity:** Low-Medium
+### [会话：UX 流程 — /ux-design → /ux-review → /team-ui](session-ux-pipeline.md)
+**类型：** UX 设计流程
+**技能：** `/ux-design`、`/ux-review`、`/team-ui`
+**时长：** 约90分钟（16轮）
+**复杂度：** 中高
 
-**Scenario:**
-User has a complete design doc and wants the damage calculation implemented. Agent reads the spec, identifies 7 ambiguities/gaps, asks clarifying questions, proposes architecture for approval, implements with rule enforcement, and proactively writes tests.
+**场景：**
+开发者设计 HUD 和物品栏界面。`/ux-design` 读取玩家旅程和 GDD，将决策锚定在玩家情绪状态上。`/ux-review` 捕获了一个阻塞性可访问性问题（拖放没有键盘替代方案）和一个建议性的色盲问题。修复后，`/team-ui` 接受交接。
 
-**Key Collaborative Moments:**
-- Agent reads design doc first, identifies 7 spec ambiguities
-- Architecture proposed with code samples BEFORE implementation
-- User requests type safety, agent refines and re-proposes
-- Rules catch issues (hardcoded values), agent fixes transparently
-- Tests written proactively following verification-driven development
-- Agent offers options for next steps rather than assuming
+**关键时刻：**
+- HUD 哲学选择（diegetic vs. persistent vs. tactical）锚定于生存类游戏的行业惯例
+- `/ux-review` 区分 BLOCKING（停止交接）和 ADVISORY（可在视觉轮次中修复）
+- 可访问性问题在实现前捕获，而非 QA 期间
+- 键盘替代方案在一轮中添加；审查重新运行并通过
+- `/team-ui` 在开始视觉设计前检查是否存在通过的 `/ux-review`
 
-**Learn:**
-- How implementation agents clarify specs before coding
-- How to propose architecture with code samples for approval
-- How rules enforce standards automatically
-- How to handle spec gaps (ask, don't assume)
-- Verification-driven development (tests prove it works)
+**学习要点：**
+- `/ux-design` 如何利用玩家旅程上下文来锚定 UI 决策
+- `/ux-review` 实际检查什么（不仅仅是"规范存在吗？"）
+- HUD 文档（`design/ux/hud.md`）与每个屏幕规范的区别
+- 可访问性问题在设计阶段 vs. 实现阶段如何处理
 
 ---
 
-### [Session: Scope Crisis - Strategic Decision Making](session-scope-crisis-decision.md)
-**Type:** Strategic Decision
-**Agent:** creative-director
-**Duration:** ~25 minutes (8 turns)
-**Complexity:** High
+### [会话：使用 /adopt 进行 Brownfield 接入](session-adopt-brownfield.md)
+**类型：** Brownfield 接入
+**技能：** `/adopt`
+**时长：** 约30分钟（8轮）
+**复杂度：** 低-中等
 
-**Scenario:**
-Solo dev faces crisis: Alpha milestone in 2 weeks, crafting system needs 3 weeks, investor demo is make-or-break. Creative director gathers context, frames the decision, presents 3 strategic options with honest trade-off analysis, makes recommendation but defers to user, then documents decision with ADR and demo script.
+**场景：**
+开发者有3个月的现有代码和粗略设计笔记，但没有正确格式的内容。`/adopt` 审核格式合规性（不仅仅是文件存在），按严重级别分类4个缺口，构建有序的7步迁移计划，并通过从代码库推断立即修复 BLOCKING 缺口（缺失的系统索引）。
 
-**Key Collaborative Moments:**
-- Agent reads context docs before proposing solutions
-- Asks 5 questions to understand decision constraints
-- Frames decision properly (what's at stake, evaluation criteria)
-- Presents 3 options with risk analysis and historical precedent
-- Makes strong recommendation but explicitly: "this is your call"
-- Documents decision + provides demo script to support user
+**关键时刻：**
+- FORMAT 审核区分"文件存在"和"文件具有必需的内部结构"
+- BLOCKING 缺口：缺失的系统索引导致4+个技能无法运行
+- 迁移计划有序：先阻塞缺口，再高优先级，再中等优先级
+- 系统索引从代码结构引导——brownfield 代码包含答案
+- 改造模式 vs. 新创作：`/design-system retrofit` 填补缺口而不覆盖
 
-**Learn:**
-- How leadership agents frame strategic decisions
-- How to present options with trade-off analysis
-- How to use game dev precedent and theory in recommendations
-- How to document decisions (ADRs)
-- How to cascade decisions to affected departments
+**学习要点：**
+- `/adopt` 与 `/project-stage-detect` 的区别
+- 如何检查格式合规性（章节检测，而非仅文件存在）
+- Brownfield 项目如何在不丢失现有工作的情况下接入
+- 何时使用改造模式 vs. 全新创作
 
 ---
 
-### [Reverse Documentation Workflow](reverse-document-workflow-example.md)
-**Type:** Brownfield Documentation
-**Agent:** game-designer
-**Duration:** ~20 minutes
-**Complexity:** Low
+### 基础示例
 
-**Scenario:**
-Developer built a skill tree system but never wrote a design doc. Agent reads the code, infers the design intent, asks clarifying questions about ambiguous decisions, and produces a retroactive GDD.
+### [会话：设计制造系统](session-design-crafting-system.md)
+**类型：** 设计
+**智能体：** game-designer
+**时长：** 约45分钟（12轮）
+**复杂度：** 中等
+
+**场景：**
+独立开发者需要设计服务于第二支柱（"通过实验的涌现式发现"）的制造系统。智能体通过问答引导他们，呈现3个带有游戏理论分析的设计选项，纳入用户修改，并在每步迭代起草 GDD 并获得批准。
+
+**关键协作时刻：**
+- 智能体首先提出5个澄清问题
+- 呈现3个有优缺点和 MDA 一致性的选项
+- 用户修改推荐选项，智能体立即纳入
+- 主动标记边缘情况（"如果不是配方组合怎么办？"）
+- 每个 GDD 章节在移动到下一个之前展示供批准
+- 创建文件前明确"可以写入 [文件] 吗？"
+
+**学习要点：**
+- 设计智能体如何询问目标、约束、参考
+- 如何使用游戏设计理论（FDA、SDT、Bartle）呈现选项
+- 如何逐章节迭代草稿
+- 何时委托给专家（systems-designer、economy-designer）
 
 ---
 
-## 🎯 **What These Examples Demonstrate**
+### [会话：实现战斗伤害计算](session-implement-combat-damage.md)
+**类型：** 实现
+**智能体：** gameplay-programmer
+**时长：** 约30分钟（10轮）
+**复杂度：** 低-中等
 
-All examples follow the **collaborative workflow pattern:**
+**场景：**
+用户有完整的设计文档，希望实现伤害计算。智能体读取规范，识别7个歧义/缺口，提出澄清问题，在批准前提出架构，实现并执行规则，主动编写测试。
+
+**关键协作时刻：**
+- 智能体首先阅读设计文档，识别7个规范歧义
+- 在实现前用代码示例提出架构
+- 用户要求类型安全，智能体完善并重新提议
+- 规则捕获问题（硬编码值），智能体透明修复
+- 遵循验证驱动开发主动编写测试
+- 智能体提供下一步选项而非假设
+
+**学习要点：**
+- 实现智能体如何在编码前澄清规范
+- 如何用代码示例提出架构供批准
+- 规则如何自动执行标准
+- 如何处理规范缺口（提问，不假设）
+- 验证驱动开发（测试证明可行）
+
+---
+
+### [会话：范围危机 - 战略决策](session-scope-crisis-decision.md)
+**类型：** 战略决策
+**智能体：** creative-director
+**时长：** 约25分钟（8轮）
+**复杂度：** 高
+
+**场景：**
+独立开发者面临危机：Alpha 里程碑还有2周，制造系统需要3周，投资者演示成败在此一举。创意总监收集上下文，正确框定决策，呈现3个带有诚实权衡分析的战略选项，提出建议但交由用户决定，然后用 ADR 和演示脚本记录决策。
+
+**关键协作时刻：**
+- 智能体在提出解决方案前阅读上下文文档
+- 提出5个问题了解决策约束
+- 正确框定决策（赌注是什么，评估标准是什么）
+- 呈现3个带有风险分析和历史先例的选项
+- 提出强烈建议但明确表示："这是你的决定"
+- 记录决策 + 提供演示脚本支持用户
+
+**学习要点：**
+- 领导智能体如何框定战略决策
+- 如何呈现带有权衡分析的选项
+- 如何在建议中使用游戏开发先例和理论
+- 如何记录决策（ADR）
+- 如何将决策级联到受影响部门
+
+---
+
+### [反向文档工作流](reverse-document-workflow-example.md)
+**类型：** Brownfield 文档
+**智能体：** game-designer
+**时长：** 约20分钟
+**复杂度：** 低
+
+**场景：**
+开发者构建了一个技能树系统但从未编写设计文档。智能体读取代码，推断设计意图，对模糊决策提出澄清问题，并生成回溯式 GDD。
+
+---
+
+## 🎯 **这些示例展示的内容**
+
+所有示例都遵循**协作式工作流模式：**
 
 ```
-Question → Options → Decision → Draft → Approval
+问题 → 选项 → 决策 → 草稿 → 批准
 ```
 
-> **Note:** These examples show the collaborative pattern as conversational text.
-> In practice, agents now use the `AskUserQuestion` tool at decision points to
-> present structured option pickers (with labels, descriptions, and multi-select).
-> The pattern is **Explain → Capture**: agents explain their analysis in
-> conversation first, then present a structured UI picker for the user's decision.
+> **注意：** 这些示例以会话文本形式展示协作模式。
+> 实际上，智能体现在在决策点使用 `AskUserQuestion` 工具来呈现结构化选项选择器
+>（带标签、描述和多选）。模式是**解释 → 捕获**：智能体首先在会话中解释分析，
+> 然后呈现用户的结构化 UI 选择器供决策。
 
-### ✅ **Collaborative Behaviors Shown:**
+### ✅ **展示的协作行为：**
 
-1. **Agents Ask Before Assuming**
-   - Design agents ask about goals, constraints, references
-   - Implementation agents clarify spec ambiguities
-   - Leadership agents gather full context before recommending
+1. **智能体在假设前先提问**
+   - 设计智能体询问目标、约束、参考
+   - 实现智能体澄清规范歧义
+   - 领导智能体在推荐前收集完整上下文
 
-2. **Agents Present Options, Not Dictates**
-   - 2-4 options with pros/cons
-   - Reasoning based on theory, precedent, project pillars
-   - Recommendation made, but user decides
+2. **智能体展示选项，而非命令**
+   - 2-4个选项带优缺点
+   - 基于理论、先例、项目支柱的推理
+   - 提出建议，但由用户决定
 
-3. **Agents Show Work Before Finalizing**
-   - Design drafts shown section-by-section
-   - Architecture proposals shown before implementation
-   - Strategic analysis presented before decisions
+3. **智能体在定稿前展示工作**
+   - 草稿逐章节展示
+   - 架构提议在实现前展示
+   - 战略分析在决策前展示
 
-4. **Agents Get Approval Before Writing Files**
-   - Explicit "May I write to [file]?" before using Write/Edit tools
-   - Multi-file changes list all affected files first
-   - User says "Yes" before any file is created
+4. **智能体在写文件前获得批准**
+   - 使用 Write/Edit 工具前明确"可以写入 [文件] 吗？"
+   - 多文件更改首先列出所有受影响文件
+   - 用户说"是"后再创建任何文件
 
-5. **Agents Iterate on Feedback**
-   - User modifications incorporated immediately
-   - No defensiveness when user changes recommendations
-   - Celebrate when user improves agent's suggestion
-
----
-
-## 📖 **How to Use These Examples**
-
-### For New Users:
-Read these examples BEFORE your first session. They show realistic expectations for how agents work:
-- Agents are consultants, not autonomous executors
-- You make all creative/strategic decisions
-- Agents provide expert guidance and options
-
-### For Understanding Specific Workflows:
-- **New to the system?** → Read skill-flow-diagrams.md first
-- **Running /design-system for the first time?** → Read session-design-system-skill.md
-- **Picking up a story?** → Read session-story-lifecycle.md
-- **Finishing a phase?** → Read session-gate-check-phase-transition.md
-- **Starting UI work?** → Read session-ux-pipeline.md
-- **Have an existing project?** → Read session-adopt-brownfield.md
-- **Designing a system (agent-driven)?** → Read session-design-crafting-system.md
-- **Implementing code?** → Read session-implement-combat-damage.md
-- **Making strategic decisions?** → Read session-scope-crisis-decision.md
-
-### For Training:
-If you're teaching someone to use this system, walk through one example turn-by-turn to show:
-- What good questions look like
-- How to evaluate presented options
-- When to approve vs. request changes
-- How to maintain creative control while leveraging AI expertise
+5. **智能体对反馈迭代**
+   - 用户修改立即纳入
+   - 用户更改推荐时没有防御心理
+   - 用户改进智能体建议时表示赞赏
 
 ---
 
-## 🔍 **Common Patterns Across All Examples**
+## 📖 **如何使用这些示例**
 
-### Turn 1-2: **Understand Before Acting**
-- Agent reads context (design docs, specs, constraints)
-- Agent asks clarifying questions
-- No assumptions or guesses
+### 新用户：
+在首次会话前阅读这些示例。它们展示对智能体工作方式的真实预期：
+- 智能体是顾问，不是自主执行者
+- 用户做出所有创意/战略决策
+- 智能体提供专家指导和选项
 
-### Turn 3-5: **Present Options with Reasoning**
-- 2-4 distinct approaches
-- Pros/cons for each
-- Theory/precedent supporting the analysis
-- Recommendation made, decision deferred to user
+### 理解特定工作流：
+- **系统新手？** → 先读 skill-flow-diagrams.md
+- **首次运行 /design-system？** → 读 session-design-system-skill.md
+- **领取故事？** → 读 session-story-lifecycle.md
+- **完成阶段？** → 读 session-gate-check-phase-transition.md
+- **开始 UI 工作？** → 读 session-ux-pipeline.md
+- **有现有项目？** → 读 session-adopt-brownfield.md
+- **设计系统（智能体驱动）？** → 读 session-design-crafting-system.md
+- **实现代码？** → 读 session-implement-combat-damage.md
+- **做出战略决策？** → 读 session-scope-crisis-decision.md
 
-### Turn 6-8: **Iterate on Drafts**
-- Show work incrementally
-- Incorporate feedback immediately
-- Flag edge cases or ambiguities proactively
-
-### Turn 9-10: **Approval and Completion**
-- "May I write to [file]?"
-- User: "Yes"
-- Agent writes files
-- Agent offers next steps (tests, review, integration)
-
----
-
-## 🚀 **Try It Yourself**
-
-After reading these examples, try this exercise:
-
-1. Pick one of your game systems (combat, inventory, progression, etc.)
-2. Ask the relevant agent to design or implement it
-3. Notice if the agent:
-   - ✅ Asks clarifying questions upfront
-   - ✅ Presents options with reasoning
-   - ✅ Shows drafts before finalizing
-   - ✅ Requests approval before writing files
-
-If the agent skips any of these, remind it:
-> "Please follow the collaborative protocol from docs/COLLABORATIVE-DESIGN-PRINCIPLE.md"
+### 用于培训：
+如果你在教授某人使用此系统，逐轮走读一个示例来展示：
+- 好的问题是什么样的
+- 如何评估呈现的选项
+- 何时批准 vs. 请求更改
+- 如何在利用 AI 专业知识的同时保持创意控制
 
 ---
 
-## 📝 **Additional Resources**
+## 🔍 **所有示例中的共同模式**
 
-- **Full Principle Documentation:** [docs/COLLABORATIVE-DESIGN-PRINCIPLE.md](../COLLABORATIVE-DESIGN-PRINCIPLE.md)
-- **Workflow Guide:** [docs/WORKFLOW-GUIDE.md](../WORKFLOW-GUIDE.md)
-- **Agent Roster:** [.claude/docs/agent-roster.md](../../.claude/docs/agent-roster.md)
-- **CLAUDE.md (Collaboration Protocol):** [CLAUDE.md](../../CLAUDE.md#collaboration-protocol)
+### 第1-2轮：先理解后行动**
+- 智能体读取上下文（设计文档、规范、约束）
+- 智能体提出澄清问题
+- 不假设或猜测
+
+### 第3-5轮：展示带推理的选项**
+- 2-4个不同方法
+- 每个的优缺点
+- 支持分析的理论/先例
+- 提出建议，决定交由用户
+
+### 第6-8轮：迭代草稿**
+- 增量展示工作
+- 立即纳入反馈
+- 主动标记边缘情况或歧义
+
+### 第9-10轮：批准与完成**
+- "可以写入 [文件] 吗？"
+- 用户："是"
+- 智能体写入文件
+- 智能体提供下一步（测试、审查、集成）
+
+---
+
+## 🚀 **自己试试**
+
+阅读这些示例后，尝试这个练习：
+
+1. 选择你的一个游戏系统（战斗、物品栏、进度等）
+2. 要求相关智能体设计或实现它
+3. 注意智能体是否：
+   - ✅ 首先提出澄清问题
+   - ✅ 用推理展示选项
+   - ✅ 在定稿前展示草稿
+   - ✅ 在写文件前请求批准
+
+如果智能体跳过任何步骤，提醒它：
+> "请遵循 docs/COLLABORATIVE-DESIGN-PRINCIPLE.md 中的协作协议"
+
+---
+
+## 📝 **附加资源**
+
+- **完整原则文档：** [docs/COLLABORATIVE-DESIGN-PRINCIPLE.md](../COLLABORATIVE-DESIGN-PRINCIPLE.md)
+- **工作流指南：** [docs/WORKFLOW-GUIDE.md](../WORKFLOW-GUIDE.md)
+- **智能体名册：** [.claude/docs/agent-roster.md](../../.claude/docs/agent-roster.md)
+- **CLAUDE.md（协作协议）：** [CLAUDE.md](../../CLAUDE.md#collaboration-protocol)
